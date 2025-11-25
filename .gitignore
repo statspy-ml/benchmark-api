@@ -1,0 +1,82 @@
+# Results and Logs
+results/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.pyc
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+vendor/
+*.sum
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.dockerignore
+
+# OS
+Thumbs.db
+.DS_Store
+*.bak
+*.tmp
+*.temp
+
+# Logs específicos do projeto
+*_output_*.log
+*_k6_output_*.log
+*_docker_stats_*.csv
+
+# Reports gerados
+*_summary_*.json
+*_metrics_*.json
+*_report_*.html
+comparison_*.csv
+
+# Arquivos temporários
+*.pid
+*.seed
+*.pid.lock
