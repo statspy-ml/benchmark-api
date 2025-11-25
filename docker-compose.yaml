@@ -1,0 +1,134 @@
+services:
+  # FastAPI Service
+  fastapi:
+    build: ./fastapi
+    container_name: benchmark-fastapi
+    ports:
+      - "8001:8000"
+    environment:
+      - WORKERS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Litestar Service
+  litestar:
+    build: ./litestar
+    container_name: benchmark-litestar
+    ports:
+      - "8002:8000"
+    environment:
+      - WORKERS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Go Service (stdlib net/http)
+  go:
+    build: ./go
+    container_name: benchmark-go
+    ports:
+      - "8003:8000"
+    environment:
+      - GOMAXPROCS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Go Fiber Service
+  go-fiber:
+    build: ./go-fiber
+    container_name: benchmark-go-fiber
+    ports:
+      - "8004:8000"
+    environment:
+      - GOMAXPROCS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Go Gin Service
+  go-gin:
+    build: ./go-gin
+    container_name: benchmark-go-gin
+    ports:
+      - "8005:8000"
+    environment:
+      - GOMAXPROCS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://[::1]:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # K6 Load Testing Service
+  k6:
+    image: grafana/k6:latest
+    container_name: benchmark-k6
+    volumes:
+      - ./k6:/scripts
+      - ./results:/results
+    networks:
+      - benchmark-net
+    depends_on:
+      fastapi:
+        condition: service_healthy
+      litestar:
+        condition: service_healthy
+      go:
+        condition: service_healthy
+      go-fiber:
+        condition: service_healthy
+      go-gin:
+        condition: service_healthy
+    command: run /scripts/load-test.js
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    profiles:
+      - test # Só roda quando você executar: docker-compose --profile test up k6
+
+networks:
+  benchmark-net:
+    driver: bridge
