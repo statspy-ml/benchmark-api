@@ -1,3 +1,4 @@
 litestar
 pydantic
 uvicorn
+asyncpg

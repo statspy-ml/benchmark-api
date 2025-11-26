@@ -2,7 +2,10 @@ module benchmark-fiber
 
 go 1.23
 
-require github.com/gofiber/fiber/v2 v2.52.5
+require (
+	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/lib/pq v1.10.9
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
