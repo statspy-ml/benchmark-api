@@ -92,7 +92,7 @@ run_test() {
     echo -e "${GREEN}✓ Test completed for $api${NC}"
     echo ""
 
-    if [ "$api" != "go-gin" ]; then
+    if [ "$api" != "rust" ]; then
         echo -e "${BLUE}→ Cooling down for 60 seconds...${NC}"
         sleep 60
     fi
@@ -102,7 +102,7 @@ run_test() {
 echo -e "${BLUE}→ Checking if containers are running...${NC}"
 docker compose ps | grep -q "benchmark-postgres.*Up" || {
     echo -e "${RED}✗ PostgreSQL not running. Starting all services...${NC}"
-    docker compose up -d postgres fastapi litestar go go-fiber go-gin
+    docker compose up -d postgres fastapi litestar go go-fiber go-gin rust
     echo -e "${BLUE}→ Waiting 30 seconds for containers to be ready...${NC}"
     sleep 30
 }
@@ -116,6 +116,7 @@ run_test "litestar"
 run_test "go"
 run_test "go-fiber"
 run_test "go-gin"
+run_test "rust"
 
 # Resumo final
 echo -e "${BLUE}========================================${NC}"

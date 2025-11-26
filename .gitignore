@@ -47,6 +47,12 @@ go.work
 vendor/
 *.sum
 
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
 # IDEs
 .vscode/
 .idea/

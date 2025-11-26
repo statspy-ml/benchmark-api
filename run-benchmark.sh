@@ -123,6 +123,7 @@ run_test "litestar"
 run_test "go"
 run_test "go-fiber"
 run_test "go-gin"
+run_test "rust"
 
 # Resumo final
 echo -e "${BLUE}========================================${NC}"

@@ -14,6 +14,9 @@ services:
           memory: 1G
     networks:
       - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -35,6 +38,9 @@ services:
           memory: 1G
     networks:
       - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -56,6 +62,9 @@ services:
           memory: 1G
     networks:
       - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
       interval: 10s
@@ -77,6 +86,9 @@ services:
           memory: 1G
     networks:
       - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
       interval: 10s
@@ -98,8 +110,33 @@ services:
           memory: 1G
     networks:
       - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://[::1]:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Rust Axum Service
+  rust:
+    build: ./rust
+    container_name: benchmark-rust
+    ports:
+      - "8006:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -123,6 +160,8 @@ services:
       go-fiber:
         condition: service_healthy
       go-gin:
+        condition: service_healthy
+      rust:
         condition: service_healthy
     command: run /scripts/load-test.js
     user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
