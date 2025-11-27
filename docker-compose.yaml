@@ -17,6 +17,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -41,6 +45,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -65,6 +73,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
       interval: 10s
@@ -89,6 +101,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
       interval: 10s
@@ -113,6 +129,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://[::1]:8000/health"]
       interval: 10s
@@ -135,8 +155,40 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Robyn Service
+  robyn:
+    build: ./robyn
+    container_name: benchmark-robyn
+    ports:
+      - "8007:8000"
+    environment:
+      - WORKERS=4
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    networks:
+      - benchmark-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -163,6 +215,8 @@ services:
         condition: service_healthy
       rust:
         condition: service_healthy
+      robyn:
+        condition: service_healthy
     command: run /scripts/load-test.js
     user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
     profiles:
@@ -177,6 +231,7 @@ services:
       POSTGRES_USER: benchmark
       POSTGRES_PASSWORD: benchmark123
       POSTGRES_HOST_AUTH_METHOD: trust
+    command: postgres -c max_connections=300
     ports:
       - "5432:5432"
     volumes:

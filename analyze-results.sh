@@ -87,7 +87,7 @@ compare_apis() {
 
     # Arrays para armazenar dados
     declare -A data
-    local apis=(fastapi litestar go go-fiber go-gin rust)
+    local apis=(fastapi litestar go go-fiber go-gin rust robyn)
 
     # Coleta dados de todos os frameworks
     for api in "${apis[@]}"; do
@@ -121,7 +121,7 @@ compare_apis() {
         local marker=""
         # Marca o melhor P50
         if [ -n "${data[${api}_p50]}" ]; then
-            local is_best=$(echo "${data[fastapi_p50]} ${data[litestar_p50]} ${data[go_p50]} ${data[go-fiber_p50]} ${data[go-gin_p50]} ${data[rust_p50]}" | tr ' ' '\n' | sort -n | head -1)
+            local is_best=$(echo "${data[fastapi_p50]} ${data[litestar_p50]} ${data[go_p50]} ${data[go-fiber_p50]} ${data[go-gin_p50]} ${data[rust_p50]} ${data[robyn_p50]}" | tr ' ' '\n' | sort -n | head -1)
             if [ "$(echo "${data[${api}_p50]} == $is_best" | bc)" == "1" ]; then
                 marker=" 🥇"
             fi
@@ -148,7 +148,7 @@ compare_apis() {
         local marker=""
         # Marca o melhor RPS
         if [ -n "${data[${api}_rps]}" ]; then
-            local is_best=$(echo "${data[fastapi_rps]} ${data[litestar_rps]} ${data[go_rps]} ${data[go-fiber_rps]} ${data[go-gin_rps]} ${data[rust_rps]}" | tr ' ' '\n' | sort -n | tail -1)
+            local is_best=$(echo "${data[fastapi_rps]} ${data[litestar_rps]} ${data[go_rps]} ${data[go-fiber_rps]} ${data[go-gin_rps]} ${data[rust_rps]} ${data[robyn_rps]}" | tr ' ' '\n' | sort -n | tail -1)
             if [ "$(echo "${data[${api}_rps]} == $is_best" | bc)" == "1" ]; then
                 marker=" 🥇"
             fi
@@ -221,7 +221,7 @@ if [ -n "$1" ]; then
     echo -e "${BLUE}Analyzing results for timestamp: $TIMESTAMP${NC}"
     echo ""
 
-    for api in fastapi litestar go go-fiber go-gin rust; do
+    for api in fastapi litestar go go-fiber go-gin rust robyn; do
         json_file="$RESULTS_DIR/${api}_summary_${TIMESTAMP}.json"
         extract_metrics "$json_file" "$api"
     done
@@ -230,7 +230,7 @@ else
     echo -e "${BLUE}Analyzing most recent results...${NC}"
     echo ""
 
-    for api in fastapi litestar go go-fiber go-gin rust; do
+    for api in fastapi litestar go go-fiber go-gin rust robyn; do
         json_file=$(ls -t "$RESULTS_DIR/${api}_summary_"*.json 2>/dev/null | head -1)
         if [ -n "$json_file" ]; then
             extract_metrics "$json_file" "$api"

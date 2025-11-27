@@ -30,6 +30,7 @@ const APIS = {
   "go-fiber": "http://go-fiber:8000",
   "go-gin": "http://go-gin:8000",
   rust: "http://rust:8000",
+  robyn: "http://robyn:8000",
 };
 
 const API_TO_TEST = __ENV.API || "fastapi";

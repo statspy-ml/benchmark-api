@@ -124,6 +124,7 @@ run_test "go"
 run_test "go-fiber"
 run_test "go-gin"
 run_test "rust"
+run_test "robyn"
 
 # Resumo final
 echo -e "${BLUE}========================================${NC}"
